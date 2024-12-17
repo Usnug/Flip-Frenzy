@@ -847,11 +847,11 @@ const pauseScreen = document.getElementById('pause-screen');
     function startTimer() {
     // Initialize Safe and Danger sounds if not already set
     if (!window.safeSound) {
-        window.safeSound = new Audio("Assets/Danger.mp3");
+        window.safeSound = new Audio("Assets/Safe.mp3");
         window.safeSound.loop = true; // Loop Safe sound
     }
     if (!window.dangerSound) {
-        window.dangerSound = new Audio("C:Assets/Danger.mp3");
+        window.dangerSound = new Audio("Assets/Danger.mp3");
         window.dangerSound.loop = true; // Loop Danger sound
     }
 
