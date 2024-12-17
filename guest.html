@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Mode - Flip Frenzy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-block-size: 100vh;
+            background-color: #2A0134;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(74, 1, 52, 0.7) 0%, transparent 60%),
+                linear-gradient(45deg, #2A0134 0%, #4A0134 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            inline-size: 100%;
+            max-inline-size: 1200px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-family: 'Impact', sans-serif;
+            letter-spacing: 5px;
+            margin-block-end: 2rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.7); }
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            perspective: 1000px;
+        }
+
+        .game-card {
+            inline-size: 250px;
+            block-size: 350px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            inset-block-start: 0;
+            inset-inline-start: 0;
+            inset-inline-end: 0;
+            inset-block-end: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            z-index: 1;
+        }
+
+        .game-card h2 {
+            font-size: 1.5rem;
+            margin-block-end: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-card p {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-block-end: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-card .icon {
+            font-size: 3rem;
+            margin-block-end: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-block-start: 2rem;
+        }
+
+        .button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #4A0134, #6A0134);
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .button.primary {
+            background: linear-gradient(45deg, #6A0134, #8A0134);
+        }
+
+        .guest-badge {
+            position: absolute;
+            inset-block-start: 20px;
+            inset-inline-end: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="guest-badge">Guest Mode</div>
+        <h1>FLIP FRENZY</h1>
+        
+        <div class="cards-container">
+            <div class="game-card" onclick="window.location.href='play.html'">
+                <div class="icon">🎮</div>
+                <h2>Quick Play</h2>
+                <p>Start a new game and test your memory skills</p>
+            </div>
+            
+            <div class="game-card" onclick="window.location.href='Settings.html'">
+                <div class="icon">⚙️</div>
+                <h2>Settings</h2>
+                <p>Adjust game settings and preferences</p>
+            </div>
+            
+            <div class="game-card" onclick="window.location.href='Secret.html'">
+                <div class="icon">👥</div>
+                <h2>About Us</h2>
+                <p>Meet the developers behind Flip Frenzy</p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="index.html" class="button">Back to Login</a>
+            <button onclick="logout()" class="button primary">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-dVRehNei0tHtQkz0igiDpQad531nu0U",
+            authDomain: "flipfrenze.firebaseapp.com",
+            projectId: "flipfrenze",
+            storageBucket: "flipfrenze.firebasestorage.app",
+            messagingSenderId: "846319082566",
+            appId: "1:846319082566:web:281c5de0ad76600b4abe47",
+            measurementId: "G-8XWS6BMVX0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Sign in anonymously for guest access
+        firebase.auth().signInAnonymously()
+            .catch((error) => {
+                console.error('Anonymous auth error:', error);
+            });
+
+        // Logout function
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Logout Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

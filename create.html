@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #2A0134;
+            color: white;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 350px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-family: 'Impact', sans-serif;
+            letter-spacing: 5px;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #4A0072;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6A0072;
+        }
+
+        p {
+            margin-top: 20px;
+        }
+
+        a {
+            color: #FFD700;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Custom Notification Styles */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-dVRehNei0tHtQkz0igiDpQad531nu0U",
+            authDomain: "flipfrenze.firebaseapp.com",
+            projectId: "flipfrenze",
+            storageBucket: "flipfrenze.firebasestorage.app",
+            messagingSenderId: "846319082566",
+            appId: "1:846319082566:web:281c5de0ad76600b4abe47",
+            measurementId: "G-8XWS6BMVX0"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Function to create a new account
+        function createAccount() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Account created
+                    console.log('Account created:', userCredential.user);
+                    alert('Account created successfully!');
+                    window.location.href = 'index.html'; // Redirect to login page
+                })
+                .catch((error) => {
+                    console.error('Error creating account:', error);
+                    alert('Error creating account: ' + error.message);
+                });
+        }
+
+        // Function to show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Show a notification on page load
+        window.addEventListener('load', () => {
+            showNotification('Welcome to Flip Frenzy!');
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>FLIP FRENZY</h1>
+        <h2>Create Account</h2>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+        <button onclick="createAccount()">Create Account</button>
+        <p>Already have an account? <a href="index.html">Login here</a></p>
+    </div>
+
+    <!-- Notification Element -->
+    <div id="notification" class="notification">This is a notification!</div>
+
+    <script>
+        // Your existing Firebase and account creation code...
+
+        // Function to show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        // Show a notification on page load
+        window.addEventListener('load', () => {
+            showNotification('Welcome to Flip Frenzy!');
+        });
+    </script>
+</body>
+</html> 

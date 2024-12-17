@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flip Frenzy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-block-size: 100vh;
+            background-color: #2A0134;
+            background-image: linear-gradient(45deg, #2A0134 0%, #4A0134 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            inline-size: 400px;
+            block-size: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+        }
+
+        .logo-inner {
+            inline-size: 100%;
+            block-size: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo.is-flipped .logo-inner {
+            transform: rotateY(180deg);
+        }
+
+        .logo-front, .logo-back {
+            position: absolute;
+            inline-size: 100%;
+            block-size: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-front {
+            background: url('Assets/Jotaro.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        .logo-back {
+            background: url('Assets/DIO.jpg') no-repeat center center;
+            background-size: cover;
+            transform: rotateY(180deg);
+        }
+
+        .content {
+            text-align: center;
+            inline-size: 400px;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-family: 'Impact', sans-serif;
+            color: #fff;
+            letter-spacing: 5px;
+            margin-block-end: 40px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-form {
+            margin-block-end: 20px;
+        }
+
+        .login-form input {
+            inline-size: 100%;
+            padding: 12px 20px;
+            margin-block-end: 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .login-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .login-form input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        button, .guest-link, .create-account-link {
+            inline-size: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button:hover, .guest-link:hover, .create-account-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active, .guest-link:active, .create-account-link:active {
+            transform: translateY(0);
+        }
+
+        #google-login {
+            background: linear-gradient(45deg, #4285f4, #34a853);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #create-account {
+            background: linear-gradient(45deg, #6A0134, #8A0134);
+        }
+
+        .guest-link {
+            background: linear-gradient(45deg, #333, #555);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .create-account-link {
+            background: linear-gradient(45deg, #4A90E2, #9013FE); /* Blue to Purple gradient */
+        }
+
+        /* New style for Play Now button */
+        .login-form button {
+            background: linear-gradient(45deg, #6A0134, #FF0000); /* Purple to Red gradient */
+        }
+
+        /* Keep your existing modal styles but update colors and animations */
+        .modal {
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            animation: modalShow 0.3s ease-out;
+        }
+
+        @keyframes modalShow {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Keep your existing error message and spinner styles */
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            inline-size: 90%;
+            max-inline-size: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .modal-content h2 {
+            margin-block-end: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-content input {
+            inline-size: 100%;
+            padding: 12px 20px;
+            margin-block-end: 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .modal-content input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .modal-content button {
+            inline-size: 100%;
+            margin-block-start: 1rem;
+        }
+
+        .close-modal {
+            color: white;
+            text-align: center;
+            margin-block-start: 1rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .close-modal:hover {
+            opacity: 1;
+        }
+
+        /* Custom Notification Styles */
+        .notification {
+            position: fixed;
+            inset-block-start: 20px;
+            inset-inline-start: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background-color: rgba(255, 0, 0, 0.9); /* Red background for error */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        #hidden-button {
+            display: none;
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            GoogleAuthProvider,
+            signInAnonymously
+        } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    
+        // Your Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-dVRehNei0tHtQkz0igiDpQad531nu0U",
+            authDomain: "flipfrenze.firebaseapp.com",
+            projectId: "flipfrenze",
+            storageBucket: "flipfrenze.firebasestorage.app",
+            messagingSenderId: "846319082566",
+            appId: "1:846319082566:web:281c5de0ad76600b4abe47",
+            measurementId: "G-8XWS6BMVX0"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const googleProvider = new GoogleAuthProvider();
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            // Flip Logo with Random Song
+            const logo = document.querySelector('.logo');
+            let musicPlayed = false; // Flag to track if music is played
+    
+            // Array of songs
+            const songs = [
+                'Assets/Beat Banger OST - Virgin Newbie.mp3',
+                'Assets/Beat Banger OST - She Doesn_t Like You.mp3',
+                'Assets/Beat Banger OST - I Can Do It Better..mp3',
+                'Assets/Beat Banger OST - The Boss.mp3',
+                'Assets/Beat Banger OST - Secret Weapon.mp3'
+            ];
+    
+            // Select a random song
+            const selectedSong = songs[Math.floor(Math.random() * songs.length)];
+    
+            logo.addEventListener('click', () => {
+                logo.classList.toggle('is-flipped');
+                if (!musicPlayed) {
+                    const rotatingSound = new Audio(selectedSong);
+                    rotatingSound.loop = true;
+                    rotatingSound.play();
+                    musicPlayed = true; // Set the flag to true to prevent future plays
+                }
+            });
+    
+            // Google Sign In
+            const googleBtn = document.getElementById('google-login');
+            googleBtn.addEventListener('click', async () => {
+                try {
+                    const result = await signInWithPopup(auth, googleProvider);
+                    console.log("Google sign in successful:", result.user);
+                    window.location.href = 'play.html';
+                } catch (error) {
+                    console.error("Google sign in error:", error);
+                    showNotification("Google sign in failed: " + error.message);
+                }
+            });
+    
+            // Guest Mode
+            const guestLink = document.querySelector('.guest-link');
+            guestLink.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await signInAnonymously(auth);
+                    window.location.href = 'play.html';
+                } catch (error) {
+                    console.error("Guest mode error:", error);
+                    showNotification("Error accessing guest mode: " + error.message);
+                }
+            });
+    
+            // Login Form
+            const loginForm = document.getElementById('login-form');
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+    
+                try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    console.log("Login successful:", userCredential.user);
+                    window.location.href = 'play.html';
+                } catch (error) {
+                    console.error("Login error:", error);
+                    if (error.code === 'auth/operation-not-allowed') {
+                        showNotification("Invalid Account");
+                    } else {
+                        showNotification("Login failed: " + error.message);
+                    }
+                }
+            });
+        });
+    
+        // Function to show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000); // Hide after 3 seconds
+        }
+    </script>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="logo" id="logo">
+            <div class="logo-inner">
+                <div class="logo-front"></div>
+                <div class="logo-back"></div>
+            </div>
+        </div>
+        <div class="content">
+            <h1>FLIP FRENZY</h1>
+            <div class="buttons">
+                <form id="login-form" class="login-form">
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                    <button type="submit">Play Now</button>
+                </form>
+                <button id="google-login">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" style="inline-size: 24px;">
+                    Play with Google
+                </button>
+                <a href="create.html" class="create-account-link">Create New Account</a>
+                <a href="#" class="guest-link">Quick Play as Guest</a>
+            </div>
+        </div>
+    </div>
+    <!-- Notification Element -->
+    <div id="notification" class="notification">This is a notification!</div>
+</body>
+</html>
