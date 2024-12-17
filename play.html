@@ -854,9 +854,13 @@ const pauseScreen = document.getElementById('pause-screen');
         window.dangerSound = new Audio("Assets/Danger.mp3");
         window.dangerSound.loop = true; // Loop Danger sound
     }
+    if (!window.endSound) {
+        window.endSound = new Audio("Assets/DOnslaughtDone1to2Waves0260Smrs_en.ogg");
+    }
 
     const safeSound = window.safeSound;
     const dangerSound = window.dangerSound;
+    const endSound = window.endSound;
 
     // Always unmute Safe and mute Danger at the start of a new level
     safeSound.muted = false;
@@ -879,6 +883,9 @@ const pauseScreen = document.getElementById('pause-screen');
             // Stop both sounds when the game is over
             safeSound.pause();
             dangerSound.pause();
+
+            // Play the end sound
+            endSound.play().catch(err => console.error("Error playing End sound:", err));
 
             gameOverScreen.style.display = 'block';
         } else {
